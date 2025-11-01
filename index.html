@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎄🧑‍🎄🎁Merry Christmas🧑‍🎄🎄🎁</title>
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js  "></script>
-    <script src="https://cdn.tailwindcss.com  "></script>
+    <title>🎄🧑‍🎄🎁Merry Christmasl🎁🧑‍🎄🎄</title>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap');
         
@@ -21,6 +21,20 @@
         }
         
         .gradient-text {
+            background: linear-gradient(135deg, #ef4444 0%, #16a34a 50%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .poetry-gradient {
+            background: linear-gradient(135deg, #166534 0%, #991b1b 50%, #ca8a04 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .countdown-text {
             background: linear-gradient(135deg, #ef4444 0%, #16a34a 50%, #fbbf24 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -72,6 +86,30 @@
             opacity: 0.3;
             pointer-events: none;
         }
+        
+        .blinking-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ef4444 0%, #16a34a 50%, #fbbf24 100%);
+            animation: blink 2s infinite;
+            margin: 0 4px;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        .footer-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
     </style>
 </head>
 <body class="bg-black text-white flex flex-col overflow-hidden relative min-h-screen">
@@ -95,25 +133,34 @@
     <!-- 主要内容 -->
     <div class="relative flex-1 flex items-center justify-center z-10 px-4">
         <div id="main-content" class="text-center max-w-4xl">
-            <h1 id="main-text" class="text-4xl md:text-7xl font-thin tracking-widest mb-16 gradient-text">
+            <h1 id="main-text" class="text-4xl md:text-7xl font-thin tracking-widest gradient-text">
                 To be continue...
             </h1>
+            
+            <!-- 添加倒计时 -->
+            <div id="countdown" class="mt-16">
+                <div class="text-lg md:text-xl font-light tracking-widest mb-2 gradient-text">距离圣诞节还有</div>
+                <div id="days-count" class="text-4xl md:text-6xl font-bold countdown-text">54 天</div>
+            </div>
         </div>
     </div>
     
     <!-- 页脚 -->
-    <footer id="footer" class="relative z-10 py-8 text-center">
-        <div id="poetry" class="mb-2 kaiti-font text-xl italic opacity-90">
+    <footer id="footer" class="footer-container py-6 text-center">
+        <div id="poetry" class="mb-3 kaiti-font text-xl italic opacity-90 poetry-gradient">
             天涯明月新，朝暮最相思
         </div>
         <div id="copyright" class="text-white text-sm tracking-widest font-light">
-            © 2025· Designed by 清河 with <span class="text-pink-400">💗</span>
+            © 2025· Designed by 清河 with <span class="blinking-dot"></span>
         </div>
     </footer>
 
     <script>
         // 等待DOM加载完成
         document.addEventListener('DOMContentLoaded', function() {
+            // 初始化倒计时
+            initCountdown();
+            
             // 创建星空
             createStarrySky();
             
@@ -129,6 +176,36 @@
             // 初始化动画
             initAnimations();
         });
+        
+        // 初始化倒计时功能
+        function initCountdown() {
+            const countdownElement = document.getElementById('days-count');
+            
+            // 更新倒计时
+            function updateCountdown() {
+                const today = new Date();
+                const currentYear = today.getFullYear();
+                const christmasDate = new Date(currentYear, 11, 25); // 12月25日，月份从0开始
+                
+                // 如果今年圣诞节已过，计算明年圣诞节
+                if (today > christmasDate) {
+                    christmasDate.setFullYear(currentYear + 1);
+                }
+                
+                // 计算天数差
+                const timeDiff = christmasDate.getTime() - today.getTime();
+                const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                
+                // 更新显示
+                countdownElement.textContent = `${daysDiff} 天`;
+            }
+            
+            // 初始更新
+            updateCountdown();
+            
+            // 每天更新一次
+            setInterval(updateCountdown, 24 * 60 * 60 * 1000);
+        }
         
         function createStarrySky() {
             const starrySky = document.getElementById('starry-sky');
@@ -580,6 +657,17 @@
                 mainText.style.opacity = '1';
                 mainText.style.transform = 'translateY(0)';
             }, 100);
+            
+            // 倒计时动画
+            const countdown = document.getElementById('countdown');
+            countdown.style.opacity = '0';
+            countdown.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                countdown.style.transition = 'opacity 1s ease-out, transform 1s ease-out';
+                countdown.style.opacity = '1';
+                countdown.style.transform = 'translateY(0)';
+            }, 800);
             
             // 页脚动画
             const footer = document.getElementById('footer');
