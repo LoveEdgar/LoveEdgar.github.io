@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>冬季星空圣诞场景</title>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js  "></script>
+    <script src="https://cdn.tailwindcss.com  "></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .kaiti-font {
+            font-family: "KaiTi", "STKaiti", "Baskerville", "Palatino Linotype", "Book Antiqua", Palatino, serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #ef4444 0%, #16a34a 50%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .bright-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+        }
+        
+        .snowflake {
+            position: absolute;
+            opacity: 0.8;
+            pointer-events: none;
+            color: #e0f2fe; /* 浅蓝色雪花 */
+            user-select: none; /* 防止被选中 */
+            font-size: 16px; /* 设置雪花基础大小 */
+            line-height: 1; /* 确保字符垂直居中 */
+        }
+        
+        .christmas-element {
+            position: absolute;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .light {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
+        }
+        
+        .holly {
+            position: absolute;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-black text-white flex flex-col overflow-hidden relative min-h-screen">
+    <!-- 星空背景 -->
+    <div id="starry-sky" class="absolute inset-0 overflow-hidden"></div>
+    
+    <!-- 山脉和河流剪影 -->
+    <div id="landscape" class="absolute inset-0 overflow-hidden"></div>
+    
+    <!-- 雪花容器 -->
+    <div id="snow-container" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+    
+    <!-- 圣诞元素 -->
+    <div id="christmas-elements" class="absolute inset-0 overflow-hidden pointer-events-none"></div>
+    
+    <!-- 雾气效果 -->
+    <div class="absolute bottom-0 left-0 right-0 h-24">
+        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-60"></div>
+    </div>
+    
+    <!-- 主要内容 -->
+    <div class="relative flex-1 flex items-center justify-center z-10 px-4">
+        <div id="main-content" class="text-center max-w-4xl">
+            <h1 id="main-text" class="text-4xl md:text-7xl font-thin tracking-widest mb-16 gradient-text">
+                To be continue...
+            </h1>
+        </div>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer id="footer" class="relative z-10 py-8 text-center">
+        <div id="poetry" class="mb-2 kaiti-font text-xl italic opacity-90">
+            天涯明月新，朝暮最相思
+        </div>
+        <div id="copyright" class="text-white text-sm tracking-widest font-light">
+            © 2025· Designed by 清河 with <span class="text-pink-400">💗</span>
+        </div>
+    </footer>
+
+    <script>
+        // 等待DOM加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            // 创建星空
+            createStarrySky();
+            
+            // 创建景观
+            createLandscape();
+            
+            // 创建雪花
+            createSnowflakes();
+            
+            // 创建圣诞元素
+            createChristmasElements();
+            
+            // 初始化动画
+            initAnimations();
+        });
+        
+        function createStarrySky() {
+            const starrySky = document.getElementById('starry-sky');
+            
+            // 创建背景星星
+            for (let i = 0; i < 250; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 60}%`;
+                star.style.opacity = Math.random() * 0.7 + 0.3;
+                starrySky.appendChild(star);
+                
+                // 添加闪烁动画
+                animateStar(star, Math.random() * 10 + 6);
+            }
+            
+            // 创建明亮星星
+            for (let i = 0; i < 40; i++) {
+                const brightStar = document.createElement('div');
+                brightStar.className = 'bright-star';
+                brightStar.style.left = `${Math.random() * 100}%`;
+                brightStar.style.top = `${Math.random() * 60}%`;
+                brightStar.style.opacity = Math.random() * 0.8 + 0.6;
+                starrySky.appendChild(brightStar);
+                
+                // 添加脉动动画
+                animateBrightStar(brightStar, Math.random() * 4 + 3);
+            }
+            
+            // 创建星座
+            createConstellations(starrySky);
+            
+            // 创建银河
+            createMilkyWay(starrySky);
+            
+            // 创建极光
+            createAurora(starrySky);
+        }
+        
+        function createLandscape() {
+            const landscape = document.getElementById('landscape');
+            
+            // 创建山脉
+            const mountains = [
+                { height: '56', opacity: '30' },
+                { height: '40', opacity: '40' },
+                { height: '28', opacity: '60' }
+            ];
+            
+            mountains.forEach(mountain => {
+                const mountainDiv = document.createElement('div');
+                mountainDiv.className = `absolute bottom-0 left-0 right-0 h-${mountain.height} opacity-${mountain.opacity}`;
+                mountainDiv.innerHTML = `
+                    <svg viewBox="0 0 1200 100" class="w-full h-full" preserveAspectRatio="none">
+                        <path d="M0,85 Q140,45 280,75 Q420,35 560,65 Q700,25 840,55 Q980,15 1120,45 Q1200,35 1200,100 L0,100 Z" fill="currentColor"/>
+                    </svg>
+                `;
+                landscape.appendChild(mountainDiv);
+            });
+            
+            // 创建冰冻河流
+            const riverDiv = document.createElement('div');
+            riverDiv.className = 'absolute bottom-20 left-0 right-0 h-10 opacity-30';
+            riverDiv.innerHTML = `
+                <svg viewBox="0 0 1200 40" class="w-full h-full" preserveAspectRatio="none">
+                    <path d="M0,20 Q200,10 400,25 Q600,35 800,15 Q1000,5 1200,20 L1200,40 L0,40 Z" fill="rgba(187, 247, 208, 0.4)"/>
+                </svg>
+            `;
+            landscape.appendChild(riverDiv);
+        }
+
+        // 创建雪花
+        function createSnowflakes() {
+            const container = document.getElementById('snow-container');
+            const snowflakeCount = 120; // 调整雪花数量
+
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.innerHTML = '❄️'; // 使用 ❄️ 字符
+                snowflake.className = 'snowflake';
+                
+                // 随机初始位置和大小
+                const size = Math.random() * 8 + 10; // 10px 到 18px
+                snowflake.style.fontSize = `${size}px`;
+                snowflake.style.left = `${Math.random() * 100}%`;
+                snowflake.style.top = `-${size}px`; // 从屏幕上方一点点开始
+                snowflake.style.opacity = Math.random() * 0.3 + 0.7; // 随机透明度
+                
+                container.appendChild(snowflake);
+
+                // 为每个雪花启动独立的动画循环
+                animateSnowflake(snowflake, size);
+            }
+        }
+
+        // 雪花动画函数 - 持续循环下落，减少摇晃
+        function animateSnowflake(snowflake, size) {
+            const fallDuration = Math.random() * 10 + 15; // 随机下降时间 (15s - 25s)
+            // 显著减小摇摆幅度
+            const swayAmplitude = Math.random() * 15 + 5; // 随机摆动幅度 (5px - 20px)，比之前小很多
+            const swayDuration = Math.random() * 6 + 4; // 随机摆动周期 (4s - 10s)
+
+            let startTime = Date.now();
+            let startTop = parseFloat(snowflake.style.top);
+            let startLeft = parseFloat(snowflake.style.left);
+
+            function update() {
+                const elapsed = (Date.now() - startTime) / 1000; // 转换为秒
+
+                // 计算垂直位置 (下落)
+                let newTop = startTop + (window.innerHeight + size) * (elapsed / fallDuration);
+                
+                // 计算水平位置 (轻微左右摆动)
+                let newLeft = startLeft + swayAmplitude * Math.sin(elapsed * (2 * Math.PI) / swayDuration);
+
+                // 如果雪花落出屏幕底部，重置到顶部
+                if (newTop > window.innerHeight) {
+                    startTop = -size; // 重置到顶部
+                    startTime = Date.now(); // 重置时间
+                    startLeft = newLeft; // 保持当前水平位置作为新起点
+                    newTop = startTop; // 立即更新top
+                }
+
+                snowflake.style.top = `${newTop}px`;
+                snowflake.style.left = `${newLeft}%`; // left 保持百分比
+                // 可选：添加轻微旋转，但旋转速度要慢，增加自然感
+                snowflake.style.transform = `rotate(${elapsed * 10}deg)`; // 旋转速度降低
+
+                requestAnimationFrame(update);
+            }
+
+            requestAnimationFrame(update);
+        }
+        
+        function createChristmasElements() {
+            const container = document.getElementById('christmas-elements');
+            
+            // 创建圣诞装饰
+            const decorations = [
+                { emoji: '🎄', size: 'text-3xl', left: '15%', top: '25%', duration: 4 },
+                { emoji: '🎅', size: 'text-2xl', left: '85%', top: '30%', duration: 3.5 },
+                { emoji: '🎁', size: 'text-xl', left: '70%', top: '40%', duration: 5 },
+                { emoji: '🎄', size: 'text-2xl', left: '25%', top: '35%', duration: 4.5 },
+            ];
+            
+            decorations.forEach(deco => {
+                const element = document.createElement('div');
+                element.className = `christmas-element ${deco.size}`;
+                element.innerHTML = deco.emoji;
+                element.style.left = deco.left;
+                element.style.top = deco.top;
+                container.appendChild(element);
+                
+                // 添加浮动动画
+                animateChristmasElement(element, deco.duration);
+            });
+            
+            // 创建圣诞灯
+            createChristmasLights(container);
+            
+            // 创建冬青叶
+            createHollyLeaves(container);
+        }
+        
+        function createConstellations(container) {
+            // 猎户座
+            const orion = document.createElement('div');
+            orion.className = 'absolute top-1/4 left-1/3';
+            orion.innerHTML = `
+                <div class="absolute w-1.5 h-1.5 bg-white rounded-full opacity-80"></div>
+                <div class="absolute top-8 left-4 w-1 h-1 bg-white rounded-full opacity-70"></div>
+                <div class="absolute top-16 left-8 w-1.5 h-1.5 bg-white rounded-full opacity-80"></div>
+                <div class="absolute top-8 left-12 w-1 h-1 bg-white rounded-full opacity-70"></div>
+                <div class="absolute top-4 left-6 w-1 h-1 bg-white rounded-full opacity-60"></div>
+                <div class="absolute top-12 left-6 w-1 h-1 bg-white rounded-full opacity-60"></div>
+                <div class="absolute top-8 left-2 w-0.5 h-0.5 bg-white rounded-full opacity-50"></div>
+                <div class="absolute top-8 left-14 w-0.5 h-0.5 bg-white rounded-full opacity-50"></div>
+                
+                <svg class="absolute -top-2 -left-2 w-20 h-24 opacity-20" viewBox="0 0 80 96">
+                    <line x1="20" y1="20" x2="36" y2="52" stroke="white" stroke-width="0.5"/>
+                    <line x1="36" y1="52" x2="52" y2="20" stroke="white" stroke-width="0.5"/>
+                    <line x1="28" y1="36" x2="28" y2="68" stroke="white" stroke-width="0.5"/>
+                    <line x1="44" y1="36" x2="44" y2="68" stroke="white" stroke-width="0.5"/>
+                    <line x1="12" y1="52" x2="20" y2="52" stroke="white" stroke-width="0.5"/>
+                    <line x1="52" y1="52" x2="60" y2="52" stroke="white" stroke-width="0.5"/>
+                </svg>
+            `;
+            container.appendChild(orion);
+            
+            // 大熊座（北斗七星）
+            const ursaMajor = document.createElement('div');
+            ursaMajor.className = 'absolute top-1/6 right-1/4';
+            ursaMajor.innerHTML = `
+                <div class="absolute w-1.5 h-1.5 bg-white rounded-full opacity-80"></div>
+                <div class="absolute top-6 left-8 w-1 h-1 bg-white rounded-full opacity-70"></div>
+                <div class="absolute top-12 left-16 w-1.5 h-1.5 bg-white rounded-full opacity-80"></div>
+                <div class="absolute top-18 left-24 w-1 h-1 bg-white rounded-full opacity-70"></div>
+                <div class="absolute top-12 left-32 w-1 h-1 bg-white rounded-full opacity-60"></div>
+                <div class="absolute top-6 left-40 w-1 h-1 bg-white rounded-full opacity-60"></div>
+                <div class="absolute top-0 left-48 w-0.5 h-0.5 bg-white rounded-full opacity-50"></div>
+                
+                <svg class="absolute -top-2 -left-2 w-52 h-24 opacity-20" viewBox="0 0 208 96">
+                    <line x1="20" y1="20" x2="52" y2="44" stroke="white" stroke-width="0.5"/>
+                    <line x1="52" y1="44" x2="84" y2="68" stroke="white" stroke-width="0.5"/>
+                    <line x1="84" y1="68" x2="116" y2="92" stroke="white" stroke-width="0.5"/>
+                    <line x1="116" y1="92" x2="148" y2="68" stroke="white" stroke-width="0.5"/>
+                    <line x1="148" y1="68" x2="180" y2="44" stroke="white" stroke-width="0.5"/>
+                    <line x1="180" y1="44" x2="204" y2="20" stroke="white" stroke-width="0.5"/>
+                </svg>
+            `;
+            container.appendChild(ursaMajor);
+            
+            // 仙后座
+            const cassiopeia = document.createElement('div');
+            cassiopeia.className = 'absolute top-1/5 left-1/5';
+            cassiopeia.innerHTML = `
+                <div class="absolute w-1 h-1 bg-white rounded-full opacity-70"></div>
+                <div class="absolute top-8 left-6 w-1.5 h-1.5 bg-white rounded-full opacity-80"></div>
+                <div class="absolute top-4 left-12 w-1 h-1 bg-white rounded-full opacity-70"></div>
+                <div class="absolute top-8 left-18 w-1 h-1 bg-white rounded-full opacity-70"></div>
+                <div class="absolute top-0 left-24 w-0.5 h-0.5 bg-white rounded-full opacity-50"></div>
+                
+                <svg class="absolute -top-2 -left-2 w-28 h-12 opacity-20" viewBox="0 0 112 48">
+                    <line x1="20" y1="20" x2="44" y2="52" stroke="white" stroke-width="0.5"/>
+                    <line x1="44" y1="52" x2="68" y2="36" stroke="white" stroke-width="0.5"/>
+                    <line x1="68" y1="36" x2="92" y2="52" stroke="white" stroke-width="0.5"/>
+                    <line x1="92" y1="52" x2="112" y2="20" stroke="white" stroke-width="0.5"/>
+                </svg>
+            `;
+            container.appendChild(cassiopeia);
+        }
+        
+        function createMilkyWay(container) {
+            const milkyWay = document.createElement('div');
+            milkyWay.className = 'absolute top-1/3 left-0 right-0 h-24 opacity-15';
+            milkyWay.innerHTML = '<div class="absolute inset-0 bg-gradient-to-r from-transparent via-blue-300 to-transparent blur-2xl"></div>';
+            container.appendChild(milkyWay);
+        }
+        
+        function createAurora(container) {
+            const aurora = document.createElement('div');
+            aurora.className = 'absolute top-0 left-0 right-0 h-32 opacity-8';
+            aurora.innerHTML = '<div class="absolute inset-0" style="background: linear-gradient(90deg, transparent, #dc2626, #16a34a, #dc2626, transparent); filter: blur(30px)"></div>';
+            container.appendChild(aurora);
+        }
+        
+        function createChristmasLights(container) {
+            const lightsContainer = document.createElement('div');
+            lightsContainer.className = 'absolute top-1/2 left-0 right-0 h-1';
+            
+            for (let i = 0; i < 20; i++) {
+                const light = document.createElement('div');
+                light.className = 'light';
+                light.style.left = `${5 + i * 4.8}%`;
+                
+                if (i % 3 === 0) {
+                    light.style.background = '#ef4444';
+                } else if (i % 3 === 1) {
+                    light.style.background = '#16a34a';
+                } else {
+                    light.style.background = '#fbbf24';
+                }
+                
+                lightsContainer.appendChild(light);
+                animateChristmasLight(light, i * 0.1);
+            }
+            
+            container.appendChild(lightsContainer);
+        }
+        
+        function createHollyLeaves(container) {
+            const holly1 = document.createElement('div');
+            holly1.className = 'holly text-xl';
+            holly1.innerHTML = '🍃';
+            holly1.style.left = '40%';
+            holly1.style.top = '20%';
+            container.appendChild(holly1);
+            animateHolly(holly1, 6);
+            
+            const holly2 = document.createElement('div');
+            holly2.className = 'holly text-xl';
+            holly2.innerHTML = '🍃';
+            holly2.style.left = '60%';
+            holly2.style.top = '22%';
+            container.appendChild(holly2);
+            animateHolly(holly2, 5.5);
+        }
+        
+        // 动画函数 (已更新雪花动画函数)
+        function animateStar(star, duration) {
+            const startOpacity = parseFloat(star.style.opacity);
+            const minOpacity = startOpacity * 0.3;
+            const maxOpacity = startOpacity;
+            
+            let direction = 1;
+            let opacity = startOpacity;
+            
+            function animate() {
+                opacity += direction * 0.01;
+                
+                if (opacity >= maxOpacity) {
+                    opacity = maxOpacity;
+                    direction = -1;
+                } else if (opacity <= minOpacity) {
+                    opacity = minOpacity;
+                    direction = 1;
+                }
+                
+                star.style.opacity = opacity;
+                setTimeout(animate, duration * 10);
+            }
+            
+            animate();
+        }
+        
+        function animateBrightStar(star, duration) {
+            let scale = 1;
+            let opacity = parseFloat(star.style.opacity);
+            const minOpacity = opacity * 0.6;
+            
+            let scaleDirection = 1;
+            let opacityDirection = 1;
+            
+            function animate() {
+                // 缩放动画
+                scale += scaleDirection * 0.002;
+                if (scale >= 1.2) {
+                    scale = 1.2;
+                    scaleDirection = -1;
+                } else if (scale <= 1) {
+                    scale = 1;
+                    scaleDirection = 1;
+                }
+                
+                star.style.transform = `scale(${scale})`;
+                
+                // 透明度动画
+                opacity += opacityDirection * 0.004;
+                if (opacity >= 1) {
+                    opacity = 1;
+                    opacityDirection = -1;
+                } else if (opacity <= minOpacity) {
+                    opacity = minOpacity;
+                    opacityDirection = 1;
+                }
+                
+                star.style.opacity = opacity;
+                
+                setTimeout(animate, duration * 10);
+            }
+            
+            animate();
+        }
+        
+        // 已移除旧的 animateSnowflake 函数
+        
+        function animateChristmasElement(element, duration) {
+            let y = 0;
+            let rotation = 0;
+            
+            const yAmplitude = 15;
+            const rotationAmplitude = 10;
+            
+            const startTime = Date.now();
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = (elapsed % (duration * 1000)) / (duration * 1000);
+                
+                // 正弦波动画
+                y = Math.sin(progress * Math.PI * 2) * yAmplitude;
+                rotation = Math.sin(progress * Math.PI * 2) * rotationAmplitude;
+                
+                element.style.transform = `translateY(${y}px) rotate(${rotation}deg)`;
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+        
+        function animateChristmasLight(light, delay) {
+            setTimeout(() => {
+                let opacity = 0.3;
+                let scale = 1;
+                let opacityDirection = 1;
+                let scaleDirection = 1;
+                
+                function animate() {
+                    // 透明度动画
+                    opacity += opacityDirection * 0.02;
+                    if (opacity >= 1) {
+                        opacity = 1;
+                        opacityDirection = -1;
+                    } else if (opacity <= 0.3) {
+                        opacity = 0.3;
+                        opacityDirection = 1;
+                    }
+                    
+                    // 缩放动画
+                    scale += scaleDirection * 0.02;
+                    if (scale >= 1.2) {
+                        scale = 1.2;
+                        scaleDirection = -1;
+                    } else if (scale <= 1) {
+                        scale = 1;
+                        scaleDirection = 1;
+                    }
+                    
+                    light.style.opacity = opacity;
+                    light.style.transform = `scale(${scale})`;
+                    
+                    setTimeout(animate, 100);
+                }
+                
+                animate();
+            }, delay * 1000);
+        }
+        
+        function animateHolly(holly, duration) {
+            let rotation = 0;
+            const amplitude = 6;
+            
+            const startTime = Date.now();
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = (elapsed % (duration * 1000)) / (duration * 1000);
+                
+                rotation = Math.sin(progress * Math.PI * 2) * amplitude;
+                
+                holly.style.transform = `rotate(${rotation}deg)`;
+                
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+        
+        function initAnimations() {
+            // 主文本动画
+            const mainText = document.getElementById('main-text');
+            mainText.style.opacity = '0';
+            mainText.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                mainText.style.transition = 'opacity 1.2s ease-out, transform 1.2s ease-out';
+                mainText.style.opacity = '1';
+                mainText.style.transform = 'translateY(0)';
+            }, 100);
+            
+            // 页脚动画
+            const footer = document.getElementById('footer');
+            const poetry = document.getElementById('poetry');
+            const copyright = document.getElementById('copyright');
+            
+            footer.style.opacity = '0';
+            footer.style.transform = 'translateY(20px)';
+            poetry.style.opacity = '0';
+            copyright.style.opacity = '0';
+            
+            setTimeout(() => {
+                footer.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+                footer.style.opacity = '1';
+                footer.style.transform = 'translateY(0)';
+                
+                setTimeout(() => {
+                    poetry.style.transition = 'opacity 0.8s ease-out';
+                    poetry.style.opacity = '1';
+                    
+                    setTimeout(() => {
+                        copyright.style.transition = 'opacity 0.8s ease-out';
+                        copyright.style.opacity = '1';
+                    }, 200);
+                }, 200);
+            }, 2200);
+            
+            // 添加主文本悬停效果
+            mainText.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.4s ease-out';
+                this.style.transform = 'scale(1.03)';
+                this.style.filter = 'drop-shadow(0 0 20px rgba(239, 68, 68, 0.7))';
+            });
+            
+            mainText.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.filter = 'none';
+            });
+        }
+    </script>
+</body>
+</html>
